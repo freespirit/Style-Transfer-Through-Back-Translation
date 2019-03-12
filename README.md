@@ -2,7 +2,7 @@
 This is a fork of the original [Style Transfer Through Back-Translation](https://github.com/shrimai/Style-Transfer-Through-Back-Translation) repository. It's sole purpose is to keep track of the changes I have to make in order to use the authors' original code.
 
 # Installation
-Get the source and data by following the instruction in the original repo (or in [this one](#markdown-header-Style-Transfer-Through-Back-Translation))
+Get the source and data by following the instruction in the original repo (or in [this one](#markdown-header-style-transfer-through-back-translation))
 
 # Running
 There are a couple of gotchas:
@@ -13,7 +13,7 @@ There are a couple of gotchas:
 I was able to workaround those by:
   * setting up a python virtual environment
     ```
-    $ python3 -m virtualenv backtranslage_venv #create a virtualenv directory, called backtranslage_venv in the root of the project
+    $ python3 -m virtualenv backtranslate_venv #create a virtualenv directory, called backtranslate_venv in the root of the project
     $ source backtranslate_venv/bin/activate # activate the virutalenv
     $ pip install torch==0.3.1 # install Torch dependencies in the virtualenv
     $ pip install torchvision==0.1.6
