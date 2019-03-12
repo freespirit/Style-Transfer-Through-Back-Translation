@@ -1,3 +1,32 @@
+# About
+This is a fork of the original [Style Transfer Through Back-Translation](https://github.com/shrimai/Style-Transfer-Through-Back-Translation) repository. It's sole purpose is to keep track of the changes I have to make in order to use the authors' original code.
+
+# Installation
+Get the source and data by following the instruction in the original repo (or in [this one](#markdown-header-Style-Transfer-Through-Back-Translation))
+
+# Running
+There are a couple of gotchas:
+  * the original code uses an old version of `PyTorch` - `0.3`
+  * it's setup for non-pre-trained models, e.g. you have to start from scratch
+  * it presumes working with CUDA device
+
+I was able to workaround those by:
+  * setting up a python virtual environment
+    ```
+    $ python3 -m virtualenv backtranslage_venv #create a virtualenv directory, called backtranslage_venv in the root of the project
+    $ source backtranslate_venv/bin/activate # activate the virutalenv
+    $ pip install torch==0.3.1 # install Torch dependencies in the virtualenv
+    $ pip install torchvision==0.1.6
+    ```
+  * modified the `Translate.py` scripts to work with pre-trained models
+  * modified <insert_here> to work with CPU instead of GPU
+
+Additional:
+ * `gitignore` is added to exclude common python and pycharm files
+
+ **Below this line is the original README content.**
+
+------------------------------------------------------
 # Style Transfer Through Back-Translation
 
 This repo contains the code and data of the following paper:
