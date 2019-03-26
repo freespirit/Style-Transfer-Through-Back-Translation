@@ -1,0 +1,38 @@
+
+* TRANSLATE
+	- english-french TRAIN set
+		268961it [8:48:57,  8.47it/s]
+		PRED AVG SCORE: -0.5515, PRED PPL: 1.7358
+	- english-french DEV set
+		2000it [03:50,  8.67it/s]
+		PRED AVG SCORE: -0.5430, PRED PPL: 1.7212
+	- english-french TEST set
+	    - republican_only
+            28000it [54:30,  8.56it/s]
+            PRED AVG SCORE: -0.4400, PRED PPL: 1.5527
+        - democratic_only
+            28000it [53:58,  8.65it/s]
+            PRED AVG SCORE: -0.4409, PRED PPL: 1.5541
+
+
+* FLIP:
+    - republican_only.test.fr -> republican_democratic.txt
+        encoder: french_english.pt
+        decoder: democratic_generator.pt
+        27989it [11:09, 41.80it/s]
+        PRED AVG SCORE: -6.4764, PRED PPL: 649.6345
+    - democratic_only.test.fr -> democratic_republican.txt
+        encoder: french_english.pt
+        decode: republican_generator.pt
+        27987it [11:21, 41.05it/s]
+        PRED AVG SCORE: -6.3887, PRED PPL: 595.0680
+
+
+* CLASSIFY:
+    - republican_democratic -> Accuracy:  80.43991416309012
+    - democratic_republican -> Accuracy:  95.63304721030043
+
+
+
+
+
