@@ -9,4 +9,7 @@ python preprocess.py -train_src ../data/political_data/classtrain.txt -label0 de
 python cnn_train.py -data political.train.pt -save_model political_model
 
 # Test the classifier accuracy
-python cnn_translate.py -model political_model_<best_model> -src ../data/political_data/democratic_only.test.en -tgt 'democratic' -label0 republican -label1 democratic
+python cnn_translate.py -model ../models/classifier/political_classifier/political_classifier.pt -src ../data/political_data/democratic_only.test.en -tgt 'democratic' -label0 republican -label1 democratic
+
+python cnn_translate.py -gpu 0 -model ../models/classifier/political_classifier/political_classifier.pt -src ../style_decoder/trained_models/republican_democratic.txt -tgt 'democratic' -label0 republican -label1 democratic
+python cnn_translate.py -gpu 0 -model ../models/classifier/political_classifier/political_classifier.pt -src ../style_decoder/trained_models/democratic_republican.txt -tgt 'republican' -label0 republican -label1 democratic

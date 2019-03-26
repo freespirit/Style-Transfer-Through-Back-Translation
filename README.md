@@ -24,6 +24,26 @@ I was able to workaround those by:
 Additional:
  * `gitignore` is added to exclude common python and pycharm files
 
+# Reproduce
+Several actions need to be done in order to reproduce the authors' results:
+ - translate the `train`, `dev` and `test` data from `en` to `fr`
+   - pay attention to the arguments of the various `translate` scripts - different arguments are required based on whether a single model or a pair of encode/decoder is used
+ - either train a decoder (e.g. style generator) or download a pre-trained from the authors' repo
+ - use the `translate.py` script to transfer from republican to democratic and vice versa. E.g.
+     
+    ```bash
+    python translate.py -encoder_model ../models/translation/french_english/french_english.pt -decoder_model ../models/style_generators/democratic_generator.pt -src ../data/political_data/republican_only.test.fr -output trained_models/republican_democratic.txt -replace_unk $true -gpu 0
+    ``` 
+    ```bash
+    python translate.py -encoder_model ../models/translation/french_english/french_english.pt -decoder_model ../models/style_generators/republican_generator.pt -src ../data/political_data/democratic_only.test.fr -output trained_models/democratic_republican.txt -replace_unk $true -gpu 0
+    ```
+ - use the classifier to evaluate the style transfer:
+    ```bash
+    python cnn_translate.py -gpu 0 -model ../models/classifier/political_classifier/political_classifier.pt -src ../style_decoder/trained_models/republican_democratic.txt -tgt 'democratic' -label0 republican -label1 democratic
+    python cnn_translate.py -gpu 0 -model ../models/classifier/political_classifier/political_classifier.pt -src ../style_decoder/trained_models/democratic_republican.txt -tgt 'republican' -label0 republican -label1 democratic
+    ```
+
+------------------------------------------------------
  **Below this line is the original README content.**
 
 ------------------------------------------------------
