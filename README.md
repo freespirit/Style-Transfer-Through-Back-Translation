@@ -19,7 +19,6 @@ I was able to workaround those by:
     $ pip install torchvision==0.1.6
     ```
   * modified the `Translate.py` scripts to work with pre-trained models
-  * modified <insert_here> to work with CPU instead of GPU
 
 Additional:
  * `gitignore` is added to exclude common python and pycharm files
