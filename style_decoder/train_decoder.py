@@ -9,6 +9,7 @@ import math
 import time
 import sys
 import onmt
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description='train.py')
 
@@ -236,7 +237,7 @@ def trainModel(model, trainData, validData, dataset, optim):
         total_loss, total_words, total_num_correct = 0, 0, 0
         report_loss, report_closs, report_tgt_words, report_src_words, report_num_correct = 0, 0, 0, 0, 0
         start = time.time()
-        for i in range(len(trainData)):
+        for i in tqdm(range(len(trainData))):
 
             batchIdx = batchOrder[i] if epoch > opt.curriculum else i
             batch = trainData[batchIdx][:-1] # exclude original indices

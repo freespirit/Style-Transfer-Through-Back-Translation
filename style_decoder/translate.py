@@ -5,17 +5,18 @@ import torch
 import argparse
 import math
 import codecs
+from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description='translate.py')
 
 ## When using english-french trained MT model, uncomment -model
 ## and comment -encoder_model and -decoder_model
-#parser.add_argument('-model', required=True,
-#                    help='Path to model .pt file')
+# parser.add_argument('-model', required=True,
+#                     help='Path to model .pt file')
 parser.add_argument('-encoder_model', required=True,
-                    help='Path to model .pt file')
+                   help='Path to model .pt file')
 parser.add_argument('-decoder_model', required=True,
-                    help='Path to model .pt file')
+                   help='Path to model .pt file')
 parser.add_argument('-src',   required=True,
                     help='Source sequence to decode (one line per sequence)')
 parser.add_argument('-tgt',
@@ -52,7 +53,7 @@ def reportScore(name, scoreTotal, wordsTotal):
         name, math.exp(-scoreTotal/wordsTotal)))
 
 def addone(f):
-    for line in f:
+    for line in tqdm(f):
         yield line
     yield None
 
@@ -62,7 +63,7 @@ def main():
     if opt.cuda:
         torch.cuda.set_device(opt.gpu)
 
-    #translator = onmt.Translator(opt)
+    # translator = onmt.Translator(opt)
     translator = onmt.Translator_style(opt)
 
     outF = codecs.open(opt.output, 'w', 'utf-8')
@@ -74,58 +75,59 @@ def main():
     count = 0
 
     tgtF = open(opt.tgt) if opt.tgt else None
-    for line in addone(codecs.open(opt.src, "r", "utf-8")):
-        
-        if line is not None:
-            srcTokens = line.split()
-            srcBatch += [srcTokens]
-            if tgtF:
-                tgtTokens = tgtF.readline().split() if tgtF else None
-                tgtBatch += [tgtTokens]
+    with codecs.open(opt.src, "r", "utf-8") as f:
+        for line in tqdm(f):
 
-            if len(srcBatch) < opt.batch_size:
-                continue
-        else:
-            # at the end of file, check last batch
-            if len(srcBatch) == 0:
-                break
+            if line is not None:
+                srcTokens = line.split()
+                srcBatch += [srcTokens]
+                if tgtF:
+                    tgtTokens = tgtF.readline().split() if tgtF else None
+                    tgtBatch += [tgtTokens]
 
-        predBatch, predScore, goldScore = translator.translate(srcBatch, tgtBatch)
- 
-        predScoreTotal += sum(score[0] for score in predScore)
-        predWordsTotal += sum(len(x[0]) for x in predBatch)
-        if tgtF is not None:
-            goldScoreTotal += sum(goldScore)
-            goldWordsTotal += sum(len(x) for x in tgtBatch)
+                if len(srcBatch) < opt.batch_size:
+                    continue
+            else:
+                # at the end of file, check last batch
+                if len(srcBatch) == 0:
+                    break
 
-        for b in range(len(predBatch)):
-            count += 1
-            outF.write(" ".join(predBatch[b][0]) + '\n')
-            outF.flush()
+            predBatch, predScore, goldScore = translator.translate(srcBatch, tgtBatch)
 
-            if opt.verbose:
-                srcSent = ' '.join(srcBatch[b])
-                if translator.tgt_dict.lower:
-                    srcSent = srcSent.lower()
-                print('SENT %d: %s' % (count, srcSent))
-                print('PRED %d: %s' % (count, " ".join(predBatch[b][0])))
-                print("PRED SCORE: %.4f" % predScore[b][0])
+            predScoreTotal += sum(score[0] for score in predScore)
+            predWordsTotal += sum(len(x[0]) for x in predBatch)
+            if tgtF is not None:
+                goldScoreTotal += sum(goldScore)
+                goldWordsTotal += sum(len(x) for x in tgtBatch)
 
-                if tgtF is not None:
-                    tgtSent = ' '.join(tgtBatch[b])
+            for b in range(len(predBatch)):
+                count += 1
+                outF.write(" ".join(predBatch[b][0]) + '\n')
+                outF.flush()
+
+                if opt.verbose:
+                    srcSent = ' '.join(srcBatch[b])
                     if translator.tgt_dict.lower:
-                        tgtSent = tgtSent.lower()
-                    print('GOLD %d: %s ' % (count, tgtSent))
-                    print("GOLD SCORE: %.4f" % goldScore[b])
+                        srcSent = srcSent.lower()
+                    print('SENT %d: %s' % (count, srcSent))
+                    print('PRED %d: %s' % (count, " ".join(predBatch[b][0])))
+                    print("PRED SCORE: %.4f" % predScore[b][0])
 
-                if opt.n_best > 1:
-                    print('\nBEST HYP:')
-                    for n in range(opt.n_best):
-                        print("[%.4f] %s" % (predScore[b][n], " ".join(predBatch[b][n])))
+                    if tgtF is not None:
+                        tgtSent = ' '.join(tgtBatch[b])
+                        if translator.tgt_dict.lower:
+                            tgtSent = tgtSent.lower()
+                        print('GOLD %d: %s ' % (count, tgtSent))
+                        print("GOLD SCORE: %.4f" % goldScore[b])
 
-                print('')
+                    if opt.n_best > 1:
+                        print('\nBEST HYP:')
+                        for n in range(opt.n_best):
+                            print("[%.4f] %s" % (predScore[b][n], " ".join(predBatch[b][n])))
 
-        srcBatch, tgtBatch = [], []
+                    print('')
+
+            srcBatch, tgtBatch = [], []
 
     reportScore('PRED', predScoreTotal, predWordsTotal)
     if tgtF:
