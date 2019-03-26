@@ -32,8 +32,6 @@ Several actions need to be done in order to reproduce the authors' results:
      
     ```bash
     python translate.py -encoder_model ../models/translation/french_english/french_english.pt -decoder_model ../models/style_generators/democratic_generator.pt -src ../data/political_data/republican_only.test.fr -output trained_models/republican_democratic.txt -replace_unk $true -gpu 0
-    ``` 
-    ```bash
     python translate.py -encoder_model ../models/translation/french_english/french_english.pt -decoder_model ../models/style_generators/republican_generator.pt -src ../data/political_data/democratic_only.test.fr -output trained_models/democratic_republican.txt -replace_unk $true -gpu 0
     ```
  - use the classifier to evaluate the style transfer:
