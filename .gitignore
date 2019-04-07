@@ -1,6 +1,13 @@
 # User-specific
 backtranslate_venv/
 
+# Large data and model directories
+data/
+models/
+
+
+
+
 
 
 # Default Python and JetBrains
