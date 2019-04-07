@@ -33,6 +33,22 @@
     - democratic_republican -> Accuracy:  95.63304721030043
 
 
+* TRAIN:
+    -$ python train_decoder.py -data ../data/democratic_generator.train.pt -save_model trained_models/democratic_generator -classifier_model ../models/classifier/political_classifier/political_classifier.pt -encoder_model ../models/translation/french_english/french_english.pt -tgt_label 1
+        Epoch 13,  3900/ 3924; acc:  38.93; ppl:   5.73; closs: 0.0086; 340 src tok/s; 316 tgt tok/s; 193413 s elapsed
+        100%|████████| 3924/3924 [4:07:04<00:00,  3.74s/it]
+        Train perplexity: 1.00145
+        Train accuracy: 42.0701
+        Validation perplexity: 4.77887
+        Validation accuracy: 44.0387
+        Decaying learning rate to 0.015625
+    -$ python cnn_translate.py \
+         -gpu 0 \
+         -model ../models/classifier/political_classifier/political_classifier.pt \
+         -src ../style_decoder/trained_models/trained_republican_democratic.txt \
+         -tgt 'democratic' -label0 republican -label1 democratic
+        Accuracy:  99.77467811158799 - very strange!
+
 
 
 
