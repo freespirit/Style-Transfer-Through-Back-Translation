@@ -12,7 +12,11 @@ class Translator(object):
         self.label0 = opt.label0
         self.label1 = opt.label1
 
-        checkpoint = torch.load(opt.model)
+        if opt.cuda:
+            checkpoint = torch.load(opt.model)
+        else:
+            checkpoint = torch.load(opt.model, map_location='cpu')
+
         model_opt = checkpoint['opt']
         self.src_dict = checkpoint['dicts']['src']
 
