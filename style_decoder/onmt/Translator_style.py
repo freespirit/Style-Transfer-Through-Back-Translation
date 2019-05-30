@@ -56,13 +56,14 @@ class Translator(object):
             self.opt.batch_size, self.opt.cuda, volatile=True)
 
     def buildTargetTokens(self, pred, src, attn):
+        pred = [p.item() for p in pred]
         tokens = self.tgt_dict.convertToLabels(pred, onmt.Constants.EOS)
         tokens = tokens[:-1]  # EOS
         if self.opt.replace_unk:
             for i in range(len(tokens)):
                 if tokens[i] == onmt.Constants.UNK_WORD:
                     _, maxIndex = attn[i].max(0)
-                    tokens[i] = src[maxIndex[0]]
+                    tokens[i] = src[maxIndex.item()]
         return tokens
 
     def translateBatch(self, srcBatch, tgtBatch):
@@ -125,8 +126,9 @@ class Translator(object):
             input = torch.stack([b.getCurrentState() for b in beam
                                if not b.done]).t().contiguous().view(1, -1)
 
-            decOut, decStates, attn = self.model.decoder(
-                Variable(input, volatile=True), decStates, context, decOut)
+            with torch.no_grad():
+                variable = Variable(input)
+            decOut, decStates, attn = self.model.decoder(variable, decStates, context, decOut)
             # decOut: 1 x (beam*batch) x numWords
             decOut = decOut.squeeze(0)
             out = self.model.generator.forward(decOut)
@@ -164,8 +166,8 @@ class Translator(object):
                 view = t.data.view(-1, remainingSents, rnnSize)
                 newSize = list(t.size())
                 newSize[-2] = newSize[-2] * len(activeIdx) // remainingSents
-                return Variable(view.index_select(1, activeIdx) \
-                                    .view(*newSize), volatile=True)
+                with torch.no_grad():
+                    return Variable(view.index_select(1, activeIdx).view(*newSize))
 
             decStates = (updateActive(decStates[0]), updateActive(decStates[1]))
             decOut = updateActive(decOut)

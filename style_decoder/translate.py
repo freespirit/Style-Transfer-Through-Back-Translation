@@ -7,6 +7,8 @@ import math
 import codecs
 from tqdm import tqdm
 
+torch.utils.backcompat.broadcast_warning.enabled=True
+
 parser = argparse.ArgumentParser(description='translate.py')
 
 ## When using english-french trained MT model, uncomment -model
