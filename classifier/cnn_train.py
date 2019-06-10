@@ -295,7 +295,7 @@ def main():
     if opt.train_from:
         print('Loading model from checkpoint at %s' % opt.train_from)
         chk_model = checkpoint['model']
-        model_state_dict = {k: v for k, v in chk_model.state_dict().items() if 'generator' not in k}
+        model_state_dict = {k: v for k, v in chk_model.items() if 'generator' not in k}
         model.load_state_dict(model_state_dict)
         opt.start_epoch = checkpoint['epoch'] + 1
 
