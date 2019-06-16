@@ -312,21 +312,21 @@ def main():
     if len(opt.gpus) > 1:
         model = nn.DataParallel(model, device_ids=opt.gpus, dim=1)
 
-    if not opt.train_from_state_dict and not opt.train_from:
-        for p in model.parameters():
-            p.data.uniform_(-opt.param_init, opt.param_init)
+    # if not opt.train_from_state_dict and not opt.train_from:
+    for p in model.parameters():
+        p.data.uniform_(-opt.param_init, opt.param_init)
 
-        model.load_pretrained_vectors(opt)
+    model.load_pretrained_vectors(opt)
 
-        optim = onmt.Optim(
-            opt.optim, opt.learning_rate, opt.max_grad_norm,
-            lr_decay=opt.learning_rate_decay,
-            start_decay_at=opt.start_decay_at
-        )
-    else:
-        print('Loading optimizer from checkpoint:')
-        optim = checkpoint['optim']
-        print(optim)
+    optim = onmt.Optim(
+        opt.optim, opt.learning_rate, opt.max_grad_norm,
+        lr_decay=opt.learning_rate_decay,
+        start_decay_at=opt.start_decay_at
+    )
+    # else:
+    #     print('Loading optimizer from checkpoint:')
+    #     optim = checkpoint['optim']
+    #     print(optim)
 
     optim.set_parameters(model.parameters())
 
