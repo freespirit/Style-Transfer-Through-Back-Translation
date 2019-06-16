@@ -5,7 +5,8 @@ backtranslate_venv/
 data/
 models/
 
-
+# PyCharm
+.idea/
 
 
 
